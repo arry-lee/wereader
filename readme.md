@@ -15,10 +15,10 @@
 
 ## 使用方法
 - 浏览器打开 https://x.weread.qq.com
-- 微信扫码登录
+- 微信扫码登录 确认，提示没有权限忽略即可
 - F12 获取 Cookie 字符串拷贝到 settings.py 中
 - Cookie 一段时间就会失效 必须重新登录获取
-- 在 settings.py 中配置好你的 USERVID
+
 
 如有帮助，请给个小星星！
 有什么问题也可以提 issue。

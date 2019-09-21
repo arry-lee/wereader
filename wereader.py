@@ -147,7 +147,7 @@ def get_notebooklist():
 
 if __name__ == '__main__':
     print(get_bookmarklist(680309))
-    books = get_booklist()
+    books = get_notebooklist()
     for b in books:
         print(b)
     print(get_bookinfo(680309))
