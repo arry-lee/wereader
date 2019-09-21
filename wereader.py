@@ -167,7 +167,7 @@ def get_bookshelf(userVid=USERVID):
 	books.sort(key=itemgetter(-1))
 	return books
 
-def get_booklist():
+def get_notebooklist():
 	"""获取笔记书单"""
 	url = "https://i.weread.qq.com/user/notebooks"
 	try:
@@ -193,14 +193,13 @@ def get_booklist():
 
 
 if __name__ == '__main__':
-	# main()
-	# print(get_bookmarklist(680309))
-	# books = get_booklist()
-	# for b in books:
-	# 	print(b)
-	# print(get_bookinfo(680309))
-	# for c in get_chapters(680309):
-	# 	print('#'*c[0],c[1])
-
+	main()
+	print(get_bookmarklist(680309))
+	books = get_booklist()
+	for b in books:
+		print(b)
+	print(get_bookinfo(680309))
+	for c in get_chapters(680309):
+		print('#'*c[0],c[1])
 	for b in get_bookshelf():
 		print(b)
