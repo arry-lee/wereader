@@ -92,10 +92,18 @@ def get_chapters(bookId):
 
     chapters = []
     for item in data['data'][0]['updated']:
-        chapters.append((item['level'],item['title']))
+        if hasattr(item,'level'):
+            chapters.append((item['level'],item['title']))
+        else:
+            chapters.append((1,item['title']))
+
         if hasattr(item,'anchors'):
             for ac in item['anchors']:
-                chapters.append((ac['level'],ac['title']))
+                try:
+                    chapters.append((ac['level'],ac['title']))
+                except:
+                    chapters.append((2,ac['title']))
+
     return chapters
 
 def get_bookinfo(bookId):
