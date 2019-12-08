@@ -2,21 +2,17 @@ from wereader import get_bookshelf,get_chapters,get_bookmarklist,get_bestbookmar
 
 def main():
     print('欢迎使用微信读书爬虫')
-    uid = input('请输入微信读书id:')
     try:
-        if uid:
-            books = get_bookshelf(int(uid))
-        else:
-            books = get_bookshelf()
+        books = get_bookshelf()
     except:
-        print('请检查你的网络和Cookie设置')
+        print('请检查您的Cookie设置')
         return
-
+    print('您的书架如下:')
     for b in books:
         print(b.bookId,b.title,b.author)
 
     while True:
-        bid = input('请输入想看哪本书的目录，请输入对应id:')
+        bid = input('想看哪本书的目录，请输入对应书籍id:')
 
         for c in get_chapters(int(bid)):
             print('#'*c[0],c[1])
