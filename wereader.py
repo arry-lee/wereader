@@ -127,11 +127,15 @@ def get_bookshelf(userVid=USERVID):
         data = r.json()
     else:
         raise Exception(r.text)
-    books = []
+    books = set()
     for book in chain(data['finishReadBooks'],data['recentBooks']):
+        if not book['bookId'].isdigit():    # 过滤公众号
+            continue
         b = Book(book['bookId'],book['title'],book['author'],book['cover'],book['category'])
-        books.append(b)
+        books.add(b)
+    books = list(books)
     books.sort(key=itemgetter(-1))
+
     return books
 
 def get_notebooklist():
