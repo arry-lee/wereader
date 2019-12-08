@@ -18,7 +18,7 @@ def main():
     while True:
         bid = input('请输入想看哪本书的目录，请输入对应id:')
 
-        for c in get_chapters(int(bid)):
+        for c in get_chapters(bid):
             print('#'*c[0],c[1])
 
         y =  input('是否需要查看该书的热门划线，y/n?')

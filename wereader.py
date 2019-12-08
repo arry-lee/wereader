@@ -81,7 +81,7 @@ def get_bestbookmarks(bookId):
 def get_chapters(bookId):
     """获取书的目录"""
     url = "https://i.weread.qq.com/book/chapterInfos"
-    data = '{"bookIds":["%d"],"synckeys":[0]}'% bookId
+    data = '{"bookIds":["%s"],"synckeys":[0]}'% bookId
 
     r = requests.post(url,data=data,headers=headers,verify=False)
 
