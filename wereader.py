@@ -154,12 +154,12 @@ def get_notebooklist():
 
 
 if __name__ == '__main__':
-    print(get_bookmarklist(680309))
+    print(get_bookmarklist("680309"))
     books = get_notebooklist()
     for b in books:
         print(b)
-    print(get_bookinfo(680309))
-    for c in get_chapters(680309):
+    print(get_bookinfo("MP_WXS_3537315193"))
+    for c in get_chapters("680309"):
         print('#'*c[0],c[1])
     for b in get_bookshelf():
         print(b)
