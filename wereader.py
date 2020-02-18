@@ -4,7 +4,7 @@ from collections import namedtuple,defaultdict
 from operator import itemgetter
 from itertools import chain
 
-from settings import COOKIE,USERVID
+from settings import COOKIE, USERVID
 
 requests.packages.urllib3.disable_warnings()
 
@@ -36,18 +36,20 @@ def get_bookmarklist(bookId):
     chapters = {c['chapterUid']:c['title'] for c in data['chapters']}
     contents = defaultdict(list)
 
-    for item in data['updated']:
+    for item in sorted(data['updated'], key=lambda x: x['chapterUid']):
+    # for item in data['updated']:
         chapter = item['chapterUid']
         text = item['markText']
         create_time = item["createTime"]
-        contents[chapter].append(text)
+        start = int(item['range'].split('-')[0])
+        contents[chapter].append((start, text))
 
     res = ''
-    for c in chapters:
+    for c in sorted(chapters.keys()):
         title = chapters[c]
         res += '## '+title+'\n'
-        for text in contents[c]:
-            res += '### '+text.strip()+'\n'
+        for start, text in sorted(contents[c], key=lambda e: e[0]):
+            res += '> '+text.strip()+'\n'
         res += '\n'
 
     return res
@@ -73,7 +75,7 @@ def get_bestbookmarks(bookId):
         title = chapters[c]
         res += '## '+title+'\n'
         for text in contents[c]:
-            res += '### '+text.strip()+'\n'
+            res += '> '+text.strip()+'\n'
         res += '\n'
     return res
 

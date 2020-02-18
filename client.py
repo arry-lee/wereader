@@ -13,6 +13,7 @@ def main():
 
     while True:
         bid = input('想看哪本书的目录，请输入对应书籍id:')
+        current_book = [x for x in books if x.bookId == bid][0]
 
         for c in get_chapters(int(bid)):
             print('#'*c[0],c[1])
@@ -26,6 +27,12 @@ def main():
         if y.lower() == 'y':
             bb = get_bookmarklist(bid)
             print(bb)
+
+        y =  input('是否需要保存你的笔记，y/n?')
+        if y.lower() == 'y':
+            bb = get_bookmarklist(bid)
+            with open(f'{current_book.title}-{current_book.bookId}.txt', 'w') as f:
+                f.write(bb)
 
         y = input('是否需要查看其他书，y/n?')
 
