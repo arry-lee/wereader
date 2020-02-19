@@ -1,3 +1,4 @@
 *.txt
 cookie
 __pycache__
+.vscode

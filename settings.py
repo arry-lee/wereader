@@ -21,7 +21,7 @@ if not COOKIE:
 
 for c in COOKIE.split(';'):
     try:
-        k,v = c.strip().split('=')
+        k, v = c.strip().split('=')
     except ValueError:
         continue
     if k == 'wr_vid':
