@@ -65,6 +65,7 @@ def get_bestbookmarks(bookId):
     r = requests.get(url, params=params, headers=headers, verify=False)
     if r.ok:
         data = r.json()
+        clipboard.copy(json.dumps(data, indent=4, sort_keys=True))
     else:
         raise Exception(r.text)
     chapters = {c['chapterUid']: c['title'] for c in data['chapters']}
@@ -101,9 +102,14 @@ def get_chapters(bookId):
     for item in data['data'][0]['updated']:
         if 'level' in item:
             chapters.append((item.get('level', 1), item['title']))
-        if 'anchors' in item:
+
+        elif 'anchors' in item:
             for ac in item['anchors']:
                 chapters.append((ac['level'], ac['title']))
+
+        else:
+            chapters.append((1, item['title']))
+
 
     return chapters
 

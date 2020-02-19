@@ -10,6 +10,7 @@ TODO:
 
 FLAG = True
 TEST = False
+# TEST = True
 CURRENT = None
 INFO = '''
     -----------------------------------------------------
@@ -17,13 +18,29 @@ INFO = '''
     -             1. 查看书架
     -             2. 搜索书架书籍
     -             3. 选择当前书籍
-    -             4. 查看（导出）当前书籍目录
-    -             5. 查看（导出）当前书籍热门划线
-    -             6. 查看（导出）当前书籍笔记
+    -             4. 查看当前书籍目录
+    -             5. 导出当前书籍目录
+    -             6. 查看当前书籍热门划线
+    -             7. 导出当前书籍热门划线
+    -             8. 查看当前书籍笔记
+    -             9. 导出当前书籍笔记
     -             0. 退出
     -             help. 打印提示信息
     -----------------------------------------------------
 '''
+
+
+def check_current(func):
+    global CURRENT
+
+    def wrapper():
+        if CURRENT:
+            func() 
+        else:
+            print("请先选择当前要操作的书籍")
+
+    return wrapper
+
 
 
 def show_shelf():
@@ -50,6 +67,7 @@ def choose_current():
     print(f"已选择书籍《{CURRENT.title}》作为当前书籍。")
 
 
+@check_current
 def see_content():
     global CURRENT
 
@@ -58,8 +76,44 @@ def see_content():
         print('#'*c[0], c[1])
 
 
+@check_current
 def see_popular():
     global CURRENT
+
+    bid = CURRENT.bookId
+    bb = get_bestbookmarks(bid)
+    print(bb)
+
+
+@check_current
+def export_popular():
+    global CURRENT
+
+    bid = CURRENT.bookId
+    bb = get_bestbookmarks(bid)
+    with open(f'{CURRENT.title}-{CURRENT.bookId}-热门划线.txt', 'w') as f:
+        f.write(bb)
+    print("导出成功")
+
+
+@check_current
+def see_mine():
+    global CURRENT
+
+    bid = CURRENT.bookId
+    bb = get_bookmarklist(bid)
+    print(bb)
+
+
+@check_current
+def export_mine():
+    global CURRENT
+
+    bid = CURRENT.bookId
+    bb = get_bookmarklist(bid)
+    with open(f'{current_book.title}-{current_book.bookId}.txt', 'w') as f:
+        f.write(bb)
+    print("导出成功")
 
 
 def leave():
@@ -75,6 +129,10 @@ func_map = {
     '1': show_shelf,
     '3': choose_current,
     '4': see_content,
+    '6': see_popular,
+    '7': export_popular,
+    '8': see_mine,
+    '9': export_mine,
     '0': leave,
     'help': help_info,
 }
@@ -82,8 +140,10 @@ func_map = {
 
 def test():
     global CURRENT
-    CURRENT = [x for x in books if x.bookId == '907606'].pop()
-    see_content()
+    bid = '25016199'
+    CURRENT = [x for x in books if x.bookId == bid].pop()
+    # see_popular()
+    export_popular()
 
 
 def main():
@@ -103,7 +163,7 @@ def main():
     print(INFO)
 
     while FLAG:
-        operation = input("您的选择是：").lower()
+        operation = input(">>>: ").lower()
         func_map.get(operation, lambda: print("非法的选择"))()
 
 
