@@ -34,6 +34,7 @@ def get_bookmarklist(bookId):
 
     if r.ok:
         data = r.json()
+        clipboard.copy(json.dumps(data, indent=4, sort_keys=True))
     else:
         raise Exception(r.text)
     chapters = {c['chapterUid']: c['title'] for c in data['chapters']}
@@ -75,12 +76,13 @@ def get_bestbookmarks(bookId):
         text = item['markText']
         contents[chapter].append(text)
 
+    chapters_map = {title: level for level, title in get_chapters(int(bookId))}
     res = ''
     for c in chapters:
         title = chapters[c]
-        res += '## '+title+'\n'
+        res += '#' * chapters_map[title] + ' ' + title + '\n'
         for text in contents[c]:
-            res += '> '+text.strip()+'\n'
+            res += '> ' + text.strip() + '\n\n'
         res += '\n'
     return res
 
@@ -94,7 +96,7 @@ def get_chapters(bookId):
 
     if r.ok:
         data = r.json()
-        clipboard.copy(json.dumps(data, indent=4, sort_keys=True))
+        # clipboard.copy(json.dumps(data, indent=4, sort_keys=True))
     else:
         raise Exception(r.text)
 
@@ -169,12 +171,12 @@ def get_notebooklist():
 
 
 if __name__ == '__main__':
-    print(get_bookmarklist(680309))
-    books = get_notebooklist()
-    for b in books:
-        print(b)
-    print(get_bookinfo(680309))
-    for c in get_chapters(680309):
-        print('#'*c[0], c[1])
-    for b in get_bookshelf():
-        print(b)
+    print(get_bookmarklist(921090))
+    # books = get_notebooklist()
+    # for b in books:
+    #     print(b)
+    # print(get_bookinfo(680309))
+    # for c in get_chapters(680309):
+    #     print('#'*c[0], c[1])
+    # for b in get_bookshelf():
+    #     print(b)

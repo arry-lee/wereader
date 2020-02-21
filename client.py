@@ -1,5 +1,5 @@
 from wereader import get_bookshelf, get_chapters, \
-    get_bookmarklist, get_bestbookmarks
+                     get_bookmarklist, get_bestbookmarks
 
 
 '''
@@ -8,6 +8,7 @@ TODO:
     2. provide a commandline interface for more convenience
 '''
 
+FMT = "md"
 FLAG = True
 TEST = False
 # TEST = True
@@ -40,7 +41,6 @@ def check_current(func):
             print("请先选择当前要操作的书籍")
 
     return wrapper
-
 
 
 def show_shelf():
@@ -91,7 +91,7 @@ def export_popular():
 
     bid = CURRENT.bookId
     bb = get_bestbookmarks(bid)
-    with open(f'{CURRENT.title}-{CURRENT.bookId}-热门划线.txt', 'w') as f:
+    with open(f'{CURRENT.title}-{CURRENT.bookId}-热门划线.{FMT}', 'w') as f:
         f.write(bb)
     print("导出成功")
 
@@ -111,7 +111,7 @@ def export_mine():
 
     bid = CURRENT.bookId
     bb = get_bookmarklist(bid)
-    with open(f'{current_book.title}-{current_book.bookId}.txt', 'w') as f:
+    with open(f'{current_book.title}-{current_book.bookId}.{FMT}', 'w') as f:
         f.write(bb)
     print("导出成功")
 
@@ -142,8 +142,9 @@ def test():
     global CURRENT
     bid = '25016199'
     CURRENT = [x for x in books if x.bookId == bid].pop()
+    choose_current()
     # see_popular()
-    export_popular()
+    # export_popular()
 
 
 def main():
@@ -153,8 +154,13 @@ def main():
         global books
         books = get_bookshelf()  # get a list of namedtuple book
     except:
-        print('请检查您的Cookie设置')
+        # print('请检查您的Cookie设置')
+        # return
+        COOKIE = input("请重新输入 Cookie:")
+        with open("cookie", 'w') as f:
+            f.write(COOKIE)
         return
+        
 
     if TEST:
         test()
@@ -163,7 +169,7 @@ def main():
     print(INFO)
 
     while FLAG:
-        operation = input(">>>: ").lower()
+        operation = input(">>> ").lower()
         func_map.get(operation, lambda: print("非法的选择"))()
 
 

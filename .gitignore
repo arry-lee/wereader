@@ -1,4 +1,12 @@
+# vscode
+*.vscode
+
+# some file
 *.txt
+*.md
 cookie
+
+# python
 __pycache__
-.vscode
+
+~readme.md

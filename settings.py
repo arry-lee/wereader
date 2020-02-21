@@ -13,10 +13,13 @@ with open("cookie") as f:
     COOKIE = f.read()
 
 
-if not COOKIE:
-    COOKIE = input("请输入 Cookie:")
-    with open("cookie", 'w') as f:
-        f.write(COOKIE)
+try:
+    books = get_bookshelf()
+except:
+    if not COOKIE:
+        COOKIE = input("请输入 Cookie:")
+        with open("cookie", 'w') as f:
+            f.write(COOKIE)
 
 
 for c in COOKIE.split(';'):
@@ -26,5 +29,6 @@ for c in COOKIE.split(';'):
         continue
     if k == 'wr_vid':
         break
+
 
 USERVID = int(v)
