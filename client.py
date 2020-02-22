@@ -20,11 +20,10 @@ INFO = '''
     -             2. 搜索书架书籍
     -             3. 选择当前书籍
     -             4. 查看当前书籍目录
-    -             5. 导出当前书籍目录
-    -             6. 查看当前书籍热门划线
-    -             7. 导出当前书籍热门划线
-    -             8. 查看当前书籍笔记
-    -             9. 导出当前书籍笔记
+    -             5. 查看当前书籍热门划线
+    -             6. 导出当前书籍热门划线
+    -             7. 查看当前书籍笔记
+    -             8. 导出当前书籍笔记
     -             0. 退出
     -             help. 打印提示信息
     -----------------------------------------------------
@@ -50,7 +49,21 @@ def show_shelf():
 
 
 def search_book():
-    pass
+    global CURRENT
+
+    query = input("请输入关键字：")
+    result = []
+    for b in books:
+        if query in b.title or query in b.author:
+            result.append(b)
+
+    [print(i, ' '.join((b.bookId, b.title, b.author))) for i, b in enumerate(result)]
+
+    select = input("选择您想要作为当前书籍的序号（空为不选择）：")
+    if select:
+        select = int(select)
+        if 0 <= select < len(result):
+            CURRENT = result[select]
 
 
 def choose_current():
@@ -111,7 +124,7 @@ def export_mine():
 
     bid = CURRENT.bookId
     bb = get_bookmarklist(bid)
-    with open(f'{current_book.title}-{current_book.bookId}.{FMT}', 'w') as f:
+    with open(f'{CURRENT.title}-{CURRENT.bookId}.{FMT}', 'w') as f:
         f.write(bb)
     print("导出成功")
 
@@ -127,12 +140,13 @@ def help_info():
 
 func_map = {
     '1': show_shelf,
+    '2': search_book,
     '3': choose_current,
     '4': see_content,
-    '6': see_popular,
-    '7': export_popular,
-    '8': see_mine,
-    '9': export_mine,
+    '5': see_popular,
+    '6': export_popular,
+    '7': see_mine,
+    '8': export_mine,
     '0': leave,
     'help': help_info,
 }
@@ -142,9 +156,11 @@ def test():
     global CURRENT
     bid = '25016199'
     CURRENT = [x for x in books if x.bookId == bid].pop()
-    choose_current()
+    # choose_current()
+    see_content()
     # see_popular()
     # export_popular()
+    # export_mine()
 
 
 def main():

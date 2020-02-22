@@ -34,7 +34,7 @@ def get_bookmarklist(bookId):
 
     if r.ok:
         data = r.json()
-        clipboard.copy(json.dumps(data, indent=4, sort_keys=True))
+        # clipboard.copy(json.dumps(data, indent=4, sort_keys=True))
     else:
         raise Exception(r.text)
     chapters = {c['chapterUid']: c['title'] for c in data['chapters']}
@@ -48,12 +48,13 @@ def get_bookmarklist(bookId):
         start = int(item['range'].split('-')[0])
         contents[chapter].append((start, text))
 
+    chapters_map = {title: level for level, title in get_chapters(int(bookId))}
     res = ''
     for c in sorted(chapters.keys()):
         title = chapters[c]
-        res += '## '+title+'\n'
+        res += '#' * chapters_map[title] + ' ' + title + '\n'
         for start, text in sorted(contents[c], key=lambda e: e[0]):
-            res += '> '+text.strip()+'\n'
+            res += '> ' + text.strip() + '\n\n'
         res += '\n'
 
     return res
@@ -66,7 +67,7 @@ def get_bestbookmarks(bookId):
     r = requests.get(url, params=params, headers=headers, verify=False)
     if r.ok:
         data = r.json()
-        clipboard.copy(json.dumps(data, indent=4, sort_keys=True))
+        # clipboard.copy(json.dumps(data, indent=4, sort_keys=True))
     else:
         raise Exception(r.text)
     chapters = {c['chapterUid']: c['title'] for c in data['chapters']}
@@ -96,22 +97,22 @@ def get_chapters(bookId):
 
     if r.ok:
         data = r.json()
-        # clipboard.copy(json.dumps(data, indent=4, sort_keys=True))
+        clipboard.copy(json.dumps(data, indent=4, sort_keys=True))
     else:
         raise Exception(r.text)
 
     chapters = []
     for item in data['data'][0]['updated']:
-        if 'level' in item:
+        if 'anchors' in item:
             chapters.append((item.get('level', 1), item['title']))
-
-        elif 'anchors' in item:
             for ac in item['anchors']:
                 chapters.append((ac['level'], ac['title']))
 
+        elif 'level' in item:
+            chapters.append((item.get('level', 1), item['title']))
+
         else:
             chapters.append((1, item['title']))
-
 
     return chapters
 
