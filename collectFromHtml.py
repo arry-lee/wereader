@@ -3,6 +3,7 @@ import sys
 
 # 通过将打开想法的页面保存到本地解析，是接口被改动后的无奈选择
 
+
 def collectBookMarks(html):
     file = open(html, encoding="utf-8")
     soup = BeautifulSoup(file, features='html.parser')
@@ -17,10 +18,22 @@ def collectBookMarks(html):
 
         text = sectionListItem.find("div", {"class": "text"})
         abstract = sectionListItem.find("div", {"class": "abstract"})
-        if text is not None:
-            print("- " + text.text)
+        # abstract 有值得时候代表有想法，且此时abstract是笔记
+        biji = None
+        xiangfa = None
         if abstract is not None:
-            print("- " + abstract.text)
+            biji = abstract.text
+            # print("- " + )
+        if text is not None:
+            if biji is not None:
+                xiangfa = text.text
+            else:
+                biji = text.text
+        if xiangfa is not None:
+            print("- " + biji, end="")
+            print("*【" + xiangfa + "】*")
+        else:
+            print("- " + biji)
 
 
 if __name__ == "__main__":
