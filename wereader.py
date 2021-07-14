@@ -1,16 +1,15 @@
 import json
 from collections import namedtuple, defaultdict
-from operator import itemgetter
+from operator import attrgetter
 from itertools import chain
 
 import requests
-import clipboard
 
 from settings import COOKIE, USERVID
 
 requests.packages.urllib3.disable_warnings()
 
-Book = namedtuple('Book', ['bookId', 'title', 'author', 'cover', 'category'])
+Book = namedtuple('Book', ['bookId', 'title', 'author', 'cover'])
 
 headers =\
     """
@@ -34,14 +33,12 @@ def get_bookmarklist(bookId):
 
     if r.ok:
         data = r.json()
-        # clipboard.copy(json.dumps(data, indent=4, sort_keys=True))
     else:
         raise Exception(r.text)
     chapters = {c['chapterUid']: c['title'] for c in data['chapters']}
     contents = defaultdict(list)
 
     for item in sorted(data['updated'], key=lambda x: x['chapterUid']):
-        # for item in data['updated']:
         chapter = item['chapterUid']
         text = item['markText']
         create_time = item["createTime"]
@@ -67,7 +64,6 @@ def get_bestbookmarks(bookId):
     r = requests.get(url, params=params, headers=headers, verify=False)
     if r.ok:
         data = r.json()
-        # clipboard.copy(json.dumps(data, indent=4, sort_keys=True))
     else:
         raise Exception(r.text)
     chapters = {c['chapterUid']: c['title'] for c in data['chapters']}
@@ -97,7 +93,7 @@ def get_chapters(bookId):
 
     if r.ok:
         data = r.json()
-        clipboard.copy(json.dumps(data, indent=4, sort_keys=True))
+        # clipboard.copy(json.dumps(data, indent=4, sort_keys=True))
     else:
         raise Exception(r.text)
 
@@ -143,17 +139,21 @@ def get_bookshelf(userVid=USERVID):
     for book in chain(data['finishReadBooks'], data['recentBooks']):
         if not book['bookId'].isdigit():    # 过滤公众号
             continue
-        b = Book(book['bookId'], book['title'], book['author'],
-                 book['cover'], book['category'])
-        books.add(b)
+        try:
+            b = Book(book['bookId'], book['title'], book['author'],
+                     book['cover'])
+            books.add(b)
+        except Exception as e:
+            pass
+
     books = list(books)
-    books.sort(key=itemgetter(-1))
+    books.sort(key=attrgetter('title'))
 
     return books
 
 
 def get_notebooklist():
-    """获取笔记书单"""
+    """获取笔记本列表"""
     url = "https://i.weread.qq.com/user/notebooks"
     r = requests.get(url, headers=headers, verify=False)
 
@@ -165,19 +165,13 @@ def get_notebooklist():
     for b in data['books']:
         book = b['book']
         b = Book(book['bookId'], book['title'], book['author'],
-                 book['cover'], book['category'])
+                 book['cover'])
         books.append(b)
-    books.sort(key=itemgetter(-1))
+    books.sort(key=attrgetter('title'))
     return books
 
 
 if __name__ == '__main__':
-    print(get_bookmarklist(921090))
-    # books = get_notebooklist()
-    # for b in books:
-    #     print(b)
-    # print(get_bookinfo(680309))
-    # for c in get_chapters(680309):
-    #     print('#'*c[0], c[1])
-    # for b in get_bookshelf():
-    #     print(b)
+    books = get_notebooklist()
+    for b in books:
+        print(b)
