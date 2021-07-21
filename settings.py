@@ -9,14 +9,10 @@ if not os.path.exists("cookie"):
 with open("cookie") as f:
     COOKIE = f.read()
 
-
-try:
-    books = get_bookshelf()
-except:
-    if not COOKIE:
-        COOKIE = input("请输入 Cookie:")
-        with open("cookie", 'w') as f:
-            f.write(COOKIE)
+if not COOKIE:
+    COOKIE = input("请输入有效Cookie:")
+    with open("cookie", 'w') as f:
+        f.write(COOKIE)
 
 
 for c in COOKIE.split(';'):

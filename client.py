@@ -169,10 +169,9 @@ def main():
     try:
         global books
         books = get_bookshelf()  # get a list of namedtuple book
-    except:
-        # print('请检查您的Cookie设置')
-        # return
-        COOKIE = input("请重新输入 Cookie:")
+    except Exception as e:
+        print(e)
+        COOKIE = input("获取书架失败，请检查并更新您的Cookie设置, 请重新输入有效Cookie:")
         with open("cookie", 'w') as f:
             f.write(COOKIE)
         return
