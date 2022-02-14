@@ -1,17 +1,12 @@
-from wereader import get_bookshelf, get_chapters, \
-                     get_bookmarklist, get_bestbookmarks
+from cookie import read_cookie_from_path
+from wereader import (get_bestbookmarks, get_bookmarklist, get_bookshelf,
+                      get_chapters)
 
-
-'''
-TODO:
-    1. rewrite the main process to make it more user friendly
-    2. provide a commandline interface for more convenience
-'''
+cookies = read_cookie_from_path('cache/Cookies')
 
 FMT = "md"
 FLAG = True
 TEST = False
-# TEST = True
 CURRENT = None
 INFO = '''
     -----------------------------------------------------
@@ -35,7 +30,7 @@ def check_current(func):
 
     def wrapper():
         if CURRENT:
-            func() 
+            func()
         else:
             print("请先选择当前要操作的书籍")
 
@@ -57,7 +52,8 @@ def search_book():
         if query in b.title or query in b.author:
             result.append(b)
 
-    [print(i, ' '.join((b.bookId, b.title, b.author))) for i, b in enumerate(result)]
+    [print(i, ' '.join((b.bookId, b.title, b.author))) for i, b in
+     enumerate(result)]
 
     select = input("选择您想要作为当前书籍的序号（空为不选择）：")
     if select:
@@ -85,8 +81,8 @@ def see_content():
     global CURRENT
 
     bid = CURRENT.bookId
-    for c in get_chapters(int(bid)):
-        print('#'*c[0], c[1])
+    for c in get_chapters(int(bid), cookies=cookies):
+        print('#' * c[0], c[1])
 
 
 @check_current
@@ -94,7 +90,7 @@ def see_popular():
     global CURRENT
 
     bid = CURRENT.bookId
-    bb = get_bestbookmarks(bid)
+    bb = get_bestbookmarks(bid, cookies=cookies)
     print(bb)
 
 
@@ -103,7 +99,7 @@ def export_popular():
     global CURRENT
 
     bid = CURRENT.bookId
-    bb = get_bestbookmarks(bid)
+    bb = get_bestbookmarks(bid, cookies=cookies)
     with open(f'{CURRENT.title}-{CURRENT.bookId}-热门划线.{FMT}', 'w') as f:
         f.write(bb)
     print("导出成功")
@@ -114,7 +110,7 @@ def see_mine():
     global CURRENT
 
     bid = CURRENT.bookId
-    bb = get_bookmarklist(bid)
+    bb = get_bookmarklist(bid, cookies=cookies)
     print(bb)
 
 
@@ -123,7 +119,7 @@ def export_mine():
     global CURRENT
 
     bid = CURRENT.bookId
-    bb = get_bookmarklist(bid)
+    bb = get_bookmarklist(bid, cookies=cookies)
     with open(f'{CURRENT.title}-{CURRENT.bookId}.{FMT}', 'w') as f:
         f.write(bb)
     print("导出成功")
@@ -139,28 +135,17 @@ def help_info():
 
 
 func_map = {
-    '1': show_shelf,
-    '2': search_book,
-    '3': choose_current,
-    '4': see_content,
-    '5': see_popular,
-    '6': export_popular,
-    '7': see_mine,
-    '8': export_mine,
-    '0': leave,
-    'help': help_info,
+    '1'   :show_shelf,
+    '2'   :search_book,
+    '3'   :choose_current,
+    '4'   :see_content,
+    '5'   :see_popular,
+    '6'   :export_popular,
+    '7'   :see_mine,
+    '8'   :export_mine,
+    '0'   :leave,
+    'help':help_info,
 }
-
-
-def test():
-    global CURRENT
-    bid = '25016199'
-    CURRENT = [x for x in books if x.bookId == bid].pop()
-    # choose_current()
-    see_content()
-    # see_popular()
-    # export_popular()
-    # export_mine()
 
 
 def main():
@@ -168,69 +153,17 @@ def main():
 
     try:
         global books
-        books = get_bookshelf()  # get a list of namedtuple book
+        books = get_bookshelf(cookies)
     except Exception as e:
         print(e)
-        COOKIE = input("获取书架失败，请检查并更新您的Cookie设置, 请重新输入有效Cookie:")
-        with open("cookie", 'w') as f:
-            f.write(COOKIE)
+        print("获取书架失败，请重新运行client.py 扫码登录")
         return
-        
-
-    if TEST:
-        test()
-        return
-
     print(INFO)
 
     while FLAG:
         operation = input(">>> ").lower()
-        func_map.get(operation, lambda: print("非法的选择"))()
-
-
-def old_main():
-    print('欢迎使用微信读书爬虫')
-    try:
-        books = get_bookshelf()
-    except:
-        print('请检查您的Cookie设置')
-        return
-    print('您的书架如下:')
-    for b in books:
-        print(b.bookId, b.title, b.author)
-
-    while True:
-        bid = input('想看哪本书的目录，请输入对应书籍id:')
-        current_book = [x for x in books if x.bookId == bid][0]
-
-        for c in get_chapters(int(bid)):
-            print('#'*c[0], c[1])
-
-        y = input('是否需要查看该书的热门划线，y/n?')
-        if y.lower() == 'y':
-            bb = get_bestbookmarks(bid)
-            print(bb)
-
-        y = input('是否需要查看你的笔记，y/n?')
-        if y.lower() == 'y':
-            bb = get_bookmarklist(bid)
-            print(bb)
-
-        y = input('是否需要保存你的笔记，y/n?')
-        if y.lower() == 'y':
-            bb = get_bookmarklist(bid)
-            with open(f'{current_book.title}-{current_book.bookId}.txt', 'w') as f:
-                f.write(bb)
-
-        y = input('是否需要查看其他书，y/n?')
-
-        if y.lower() == 'y':
-            continue
-        else:
-            print('bye~')
-            break
+        func_map.get(operation, lambda:print("非法的选择"))()
 
 
 if __name__ == "__main__":
-    # old_main()
     main()
