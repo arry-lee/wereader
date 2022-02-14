@@ -1,17 +1,14 @@
-import json
-from collections import namedtuple, defaultdict
-from operator import attrgetter
+from collections import defaultdict, namedtuple
 from itertools import chain
+from operator import attrgetter
 
 import requests
-
-from settings import COOKIE, USERVID
 
 requests.packages.urllib3.disable_warnings()
 
 Book = namedtuple('Book', ['bookId', 'title', 'author', 'cover'])
 
-headers =\
+headers = \
     """
 Host: i.weread.qq.com
 Connection: keep-alive
@@ -22,58 +19,61 @@ Accept-Encoding: gzip, deflate, br
 Accept-Language: zh-CN,zh;q=0.9,en;q=0.8
 """
 headers = dict(x.split(': ', 1) for x in headers.splitlines() if x)
-headers.update(Cookie=COOKIE)
 
 
-def get_bookmarklist(bookId):
+def get_bookmarklist(bookId, cookies):
     """获取某本书的笔记返回md文本"""
     url = "https://i.weread.qq.com/book/bookmarklist"
     params = dict(bookId=bookId)
-    r = requests.get(url, params=params, headers=headers, verify=False)
+    r = requests.get(url, params=params, headers=headers, cookies=cookies,
+                     verify=False)
 
     if r.ok:
         data = r.json()
     else:
         raise Exception(r.text)
-    chapters = {c['chapterUid']: c['title'] for c in data['chapters']}
+    chapters = {c['chapterUid']:c['title'] for c in data['chapters']}
     contents = defaultdict(list)
 
-    for item in sorted(data['updated'], key=lambda x: x['chapterUid']):
+    for item in sorted(data['updated'], key=lambda x:x['chapterUid']):
         chapter = item['chapterUid']
         text = item['markText']
         create_time = item["createTime"]
         start = int(item['range'].split('-')[0])
         contents[chapter].append((start, text))
 
-    chapters_map = {title: level for level, title in get_chapters(int(bookId))}
+    chapters_map = {title:level for level, title in
+                    get_chapters(int(bookId), cookies)}
     res = ''
     for c in sorted(chapters.keys()):
         title = chapters[c]
         res += '#' * chapters_map[title] + ' ' + title + '\n'
-        for start, text in sorted(contents[c], key=lambda e: e[0]):
+        for start, text in sorted(contents[c], key=lambda e:e[0]):
             res += '> ' + text.strip() + '\n\n'
         res += '\n'
 
     return res
 
 
-def get_bestbookmarks(bookId):
+def get_bestbookmarks(bookId, cookies):
     """获取书籍的热门划线,返回文本"""
     url = "https://i.weread.qq.com/book/bestbookmarks"
     params = dict(bookId=bookId)
-    r = requests.get(url, params=params, headers=headers, verify=False)
+    r = requests.get(url, params=params, headers=headers, cookies=cookies,
+                     verify=False)
     if r.ok:
         data = r.json()
     else:
         raise Exception(r.text)
-    chapters = {c['chapterUid']: c['title'] for c in data['chapters']}
+    chapters = {c['chapterUid']:c['title'] for c in data['chapters']}
     contents = defaultdict(list)
     for item in data['items']:
         chapter = item['chapterUid']
         text = item['markText']
         contents[chapter].append(text)
 
-    chapters_map = {title: level for level, title in get_chapters(int(bookId))}
+    chapters_map = {title:level for level, title in
+                    get_chapters(int(bookId), cookies)}
     res = ''
     for c in chapters:
         title = chapters[c]
@@ -84,12 +84,13 @@ def get_bestbookmarks(bookId):
     return res
 
 
-def get_chapters(bookId):
+def get_chapters(bookId, cookies):
     """获取书的目录"""
     url = "https://i.weread.qq.com/book/chapterInfos"
     data = '{"bookIds":["%d"],"synckeys":[0]}' % bookId
 
-    r = requests.post(url, data=data, headers=headers, verify=False)
+    r = requests.post(url, data=data, headers=headers, cookies=cookies,
+                      verify=False)
 
     if r.ok:
         data = r.json()
@@ -113,11 +114,12 @@ def get_chapters(bookId):
     return chapters
 
 
-def get_bookinfo(bookId):
+def get_bookinfo(bookId, cookies):
     """获取书的详情"""
     url = "https://i.weread.qq.com/book/info"
     params = dict(bookId=bookId)
-    r = requests.get(url, params=params, headers=headers, verify=False)
+    r = requests.get(url, params=params, headers=headers, cookies=cookies,
+                     verify=False)
 
     if r.ok:
         data = r.json()
@@ -126,18 +128,20 @@ def get_bookinfo(bookId):
     return data
 
 
-def get_bookshelf(userVid=USERVID):
+def get_bookshelf(cookies):
     """获取书架上所有书"""
     url = "https://i.weread.qq.com/shelf/friendCommon"
+    userVid = cookies.get('wr_vid')
     params = dict(userVid=userVid)
-    r = requests.get(url, params=params, headers=headers, verify=False)
+    r = requests.get(url, params=params, headers=headers, cookies=cookies,
+                     verify=False)
     if r.ok:
         data = r.json()
     else:
         raise Exception(r.text)
     books = set()
     for book in chain(data['finishReadBooks'], data['recentBooks']):
-        if not book['bookId'].isdigit():    # 过滤公众号
+        if not book['bookId'].isdigit():  # 过滤公众号
             continue
         try:
             b = Book(book['bookId'], book['title'], book['author'],
@@ -152,10 +156,10 @@ def get_bookshelf(userVid=USERVID):
     return books
 
 
-def get_notebooklist():
+def get_notebooklist(cookies):
     """获取笔记本列表"""
     url = "https://i.weread.qq.com/user/notebooks"
-    r = requests.get(url, headers=headers, verify=False)
+    r = requests.get(url, headers=headers, cookies=cookies, verify=False)
 
     if r.ok:
         data = r.json()
