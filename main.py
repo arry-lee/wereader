@@ -3,6 +3,7 @@ import os
 import os.path
 import sys
 
+from PyQt5 import QtGui
 from PyQt5.QtCore import QItemSelectionModel, QStringListModel, QUrl
 from PyQt5.QtGui import (
     QStandardItem,
@@ -15,6 +16,8 @@ from PyQt5.QtWidgets import (QAbstractItemView, QApplication, QMainWindow,
 import wereader
 from cookie import read_cookie_from_path
 from ui_mainwindow import Ui_MainWindow
+
+root_path = os.path.abspath(os.path.dirname(__file__))
 
 
 class QmMainWindow(QMainWindow):
@@ -30,6 +33,11 @@ class QmMainWindow(QMainWindow):
         self.pbar = QProgressBar(self)
         self.pbar.setFixedWidth(500)
         self.ui.statusBar.addWidget(self.pbar)
+        icon = QtGui.QIcon()
+        icon.addPixmap(
+            QtGui.QPixmap(os.path.join(root_path, "static/icon.png")),
+            QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.setWindowIcon(icon)
 
         self.browser = QWebEngineView(self)
         self.browser.setGeometry(
@@ -40,7 +48,7 @@ class QmMainWindow(QMainWindow):
         )
 
         # 加载外部的web页面
-        self.cache_path = "cache"
+        self.cache_path = os.path.join(root_path, "cache")
         if not os.path.exists(self.cache_path):
             os.mkdir(self.cache_path)
 
@@ -59,7 +67,7 @@ class QmMainWindow(QMainWindow):
         self.ui.tableView.setSelectionBehavior(QAbstractItemView.SelectRows)
 
         self.is_reading_mode = True
-        self.note_dir = "notes"
+        self.note_dir = os.path.join(root_path, "notes")
         if not os.path.exists(self.note_dir):
             os.mkdir(self.note_dir)
 
