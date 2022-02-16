@@ -1,14 +1,13 @@
 from cookie import read_cookie_from_path
-from wereader import (get_bestbookmarks, get_bookmarklist, get_bookshelf,
-                      get_chapters)
+from wereader import get_bestbookmarks, get_bookmarklist, get_bookshelf, get_chapters
 
-cookies = read_cookie_from_path('cache/Cookies')
+cookies = read_cookie_from_path("cache/Cookies")
 
 FMT = "md"
 FLAG = True
 TEST = False
 CURRENT = None
-INFO = '''
+INFO = """
     -----------------------------------------------------
     -             请选择您想要执行的操作：
     -             1. 查看书架
@@ -22,7 +21,7 @@ INFO = '''
     -             0. 退出
     -             help. 打印提示信息
     -----------------------------------------------------
-'''
+"""
 
 
 def check_current(func):
@@ -38,7 +37,7 @@ def check_current(func):
 
 
 def show_shelf():
-    print('您的书架如下:')
+    print("您的书架如下:")
     for b in books:
         print(b.bookId, b.title, b.author)
 
@@ -52,8 +51,7 @@ def search_book():
         if query in b.title or query in b.author:
             result.append(b)
 
-    [print(i, ' '.join((b.bookId, b.title, b.author))) for i, b in
-     enumerate(result)]
+    [print(i, " ".join((b.bookId, b.title, b.author))) for i, b in enumerate(result)]
 
     select = input("选择您想要作为当前书籍的序号（空为不选择）：")
     if select:
@@ -82,7 +80,7 @@ def see_content():
 
     bid = CURRENT.bookId
     for c in get_chapters(int(bid), cookies=cookies):
-        print('#' * c[0], c[1])
+        print("#" * c[0], c[1])
 
 
 @check_current
@@ -100,7 +98,7 @@ def export_popular():
 
     bid = CURRENT.bookId
     bb = get_bestbookmarks(bid, cookies=cookies)
-    with open(f'{CURRENT.title}-{CURRENT.bookId}-热门划线.{FMT}', 'w') as f:
+    with open(f"{CURRENT.title}-{CURRENT.bookId}-热门划线.{FMT}", "w") as f:
         f.write(bb)
     print("导出成功")
 
@@ -120,7 +118,7 @@ def export_mine():
 
     bid = CURRENT.bookId
     bb = get_bookmarklist(bid, cookies=cookies)
-    with open(f'{CURRENT.title}-{CURRENT.bookId}.{FMT}', 'w') as f:
+    with open(f"{CURRENT.title}-{CURRENT.bookId}.{FMT}", "w") as f:
         f.write(bb)
     print("导出成功")
 
@@ -135,21 +133,21 @@ def help_info():
 
 
 func_map = {
-    '1'   :show_shelf,
-    '2'   :search_book,
-    '3'   :choose_current,
-    '4'   :see_content,
-    '5'   :see_popular,
-    '6'   :export_popular,
-    '7'   :see_mine,
-    '8'   :export_mine,
-    '0'   :leave,
-    'help':help_info,
+    "1": show_shelf,
+    "2": search_book,
+    "3": choose_current,
+    "4": see_content,
+    "5": see_popular,
+    "6": export_popular,
+    "7": see_mine,
+    "8": export_mine,
+    "0": leave,
+    "help": help_info,
 }
 
 
 def main():
-    print('欢迎使用微信读书爬虫')
+    print("欢迎使用微信读书爬虫")
 
     try:
         global books
@@ -162,7 +160,7 @@ def main():
 
     while FLAG:
         operation = input(">>> ").lower()
-        func_map.get(operation, lambda:print("非法的选择"))()
+        func_map.get(operation, lambda: print("非法的选择"))()
 
 
 if __name__ == "__main__":
