@@ -79,6 +79,7 @@
     </property>
     <addaction name="actionLoadShelf"/>
     <addaction name="actionLoadNotes"/>
+    <addaction name="actionLoadCover"/>
    </widget>
    <widget class="QMenu" name="menuNote">
     <property name="title">
@@ -160,6 +161,11 @@
   <action name="actionLoadHot">
    <property name="text">
     <string>热门笔记</string>
+   </property>
+  </action>
+  <action name="actionLoadCover">
+   <property name="text">
+    <string>下载封面</string>
    </property>
   </action>
  </widget>

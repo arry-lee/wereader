@@ -71,8 +71,11 @@ class Ui_MainWindow(object):
         self.actionHide.setObjectName("actionHide")
         self.actionLoadHot = QtWidgets.QAction(MainWindow)
         self.actionLoadHot.setObjectName("actionLoadHot")
+        self.actionLoadCover = QtWidgets.QAction(MainWindow)
+        self.actionLoadCover.setObjectName("actionLoadCover")
         self.menuTool.addAction(self.actionLoadShelf)
         self.menuTool.addAction(self.actionLoadNotes)
+        self.menuTool.addAction(self.actionLoadCover)
         self.menuNote.addSeparator()
         self.menuNote.addAction(self.actionShow)
         self.menuNote.addAction(self.actionSave)
@@ -107,4 +110,5 @@ class Ui_MainWindow(object):
         self.actionOpen.setShortcut(_translate("MainWindow", "Backspace"))
         self.actionHide.setText(_translate("MainWindow", "Hide"))
         self.actionLoadHot.setText(_translate("MainWindow", "热门笔记"))
+        self.actionLoadCover.setText(_translate("MainWindow", "下载封面"))
 
