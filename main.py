@@ -30,6 +30,7 @@ class QmMainWindow(QMainWindow):
         self.ui.actionLoadShelf.triggered.connect(self.download_shelf)
         self.ui.actionLoadHot.triggered.connect(self.show_hot_note)
         self.ui.actionLoadNotes.triggered.connect(self.download_notes)
+        self.ui.statusBar.hide()
         self.pbar = QProgressBar(self)
         self.pbar.setFixedWidth(500)
         self.ui.statusBar.addWidget(self.pbar)
@@ -86,11 +87,11 @@ class QmMainWindow(QMainWindow):
     def resizeEvent(self, a0):
         self.browser.resize(
             self.width(),
-            self.height() - self.ui.menubar.height() - self.ui.statusBar.height(),
+            self.height() - self.ui.menubar.height(),
         )
         self.ui.splitter_2.resize(
             self.width() - 10,
-            self.height() - self.ui.menubar.height() - self.ui.statusBar.height(),
+            self.height() - self.ui.menubar.height(),
         )
 
         self.ui.tableView.resize(
@@ -200,6 +201,7 @@ class QmMainWindow(QMainWindow):
 
     def download_notes(self):
         self.ui.actionLoadNotes.setDisabled(True)
+        self.ui.statusBar.show()
         self.pbar.show()
         self.pbar.setMaximum(len(self.booklist))
         for i, book in enumerate(self.booklist):
@@ -216,6 +218,7 @@ class QmMainWindow(QMainWindow):
                 print(e)
 
         self.pbar.hide()
+        self.ui.statusBar.hide()
 
 
 if __name__ == "__main__":
