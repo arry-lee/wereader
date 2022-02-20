@@ -12,3 +12,4 @@ __pycache__
 ~readme.md
 /cache/*
 /notes/*
+/static/cover/
