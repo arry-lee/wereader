@@ -1,3 +1,4 @@
+import os.path
 from collections import defaultdict, namedtuple
 from itertools import chain
 from operator import attrgetter
@@ -165,7 +166,41 @@ def get_notebooklist(cookies):
     return books
 
 
-if __name__ == "__main__":
-    books = get_notebooklist()
-    for b in books:
-        print(b)
+def get_bookcover(book,output_dir=None):
+    headers = {
+        'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+        'accept-encoding': 'gzip, deflate, br',
+        'accept-language': 'zh-CN,zh;q=0.9',
+        'cache-control': 'max-age=0',
+        'if-modified-since': 'Thu, 01 Nov 2018 11:45:36 GMT',
+        'if-none-match': 'd52c44c46328acfc2e0bd6f4b444f9f03e2a5be2',
+        'sec-ch-ua': '" Not A;Brand";v="99", "Chromium";v="96", "Google Chrome";v="96"',
+        'sec-ch-ua-mobile': '?0',
+        'sec-ch-ua-platform': '"Windows"',
+        'sec-fetch-dest': 'document',
+        'sec-fetch-mode': 'navigate',
+        'sec-fetch-site': 'none',
+        'sec-fetch-user': '?1',
+        'upgrade-insecure-requests': '1',
+        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36'
+    }
+
+    url = 'b'.join(book.cover.rsplit('s',1))
+    r = requests.get(url, headers=headers, verify=False)
+    print(r)
+    if r.ok:
+        data = r.content
+    else:
+        raise Exception(r.text)
+
+    if output_dir is None:
+        output_dir = os.path.abspath(os.path.dirname(__file__))
+
+    path = os.path.join(output_dir, str(book.bookId) + '.jpg')
+    print(path)
+    with open(path,'wb') as f:
+        f.write(data)
+
+if __name__ == '__main__':
+    b = Book(622114,'','',"https://wfqqreader-1252317822.image.myqcloud.com/cover/114/622114/s_622114.jpg")
+    get_bookcover(b)
