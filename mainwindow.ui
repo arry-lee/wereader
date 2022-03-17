@@ -98,8 +98,18 @@
     <addaction name="actionAuthor"/>
     <addaction name="actionLicense"/>
    </widget>
-   <addaction name="menuTool"/>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>View</string>
+    </property>
+    <addaction name="actionback"/>
+    <addaction name="actionforward"/>
+    <addaction name="actionShelf"/>
+    <addaction name="actionLibrary"/>
+   </widget>
    <addaction name="menuNote"/>
+   <addaction name="menuTool"/>
+   <addaction name="menuView"/>
    <addaction name="menuAbout"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
@@ -149,9 +159,6 @@
    <property name="text">
     <string>打开</string>
    </property>
-   <property name="shortcut">
-    <string>Backspace</string>
-   </property>
   </action>
   <action name="actionHide">
    <property name="text">
@@ -166,6 +173,38 @@
   <action name="actionLoadCover">
    <property name="text">
     <string>下载封面</string>
+   </property>
+  </action>
+  <action name="actionback">
+   <property name="text">
+    <string>Back</string>
+   </property>
+   <property name="shortcut">
+    <string>B</string>
+   </property>
+  </action>
+  <action name="actionforward">
+   <property name="text">
+    <string>Forward</string>
+   </property>
+   <property name="shortcut">
+    <string>F</string>
+   </property>
+  </action>
+  <action name="actionShelf">
+   <property name="text">
+    <string>书架</string>
+   </property>
+   <property name="shortcut">
+    <string>S</string>
+   </property>
+  </action>
+  <action name="actionLibrary">
+   <property name="text">
+    <string>书城</string>
+   </property>
+   <property name="shortcut">
+    <string>L</string>
    </property>
   </action>
  </widget>

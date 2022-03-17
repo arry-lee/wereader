@@ -3,7 +3,7 @@ import os
 import os.path
 import sys
 
-from PyQt5 import QtGui
+from PyQt5 import QtCore, QtGui
 from PyQt5.QtCore import QItemSelectionModel, QStringListModel, QUrl
 from PyQt5.QtGui import (
     QStandardItem,
@@ -11,7 +11,7 @@ from PyQt5.QtGui import (
 )
 from PyQt5.QtWebEngineWidgets import (QWebEngineProfile, QWebEngineView)
 from PyQt5.QtWidgets import (QAbstractItemView, QApplication, QMainWindow,
-                             QProgressBar)
+                             QProgressBar, QPushButton)
 
 import wereader
 from cookie import read_cookie_from_path
@@ -47,6 +47,10 @@ class QmMainWindow(QMainWindow):
             self.width(),
             self.height() - self.ui.menubar.height(),
         )
+        self.ui.actionback.triggered.connect(self.browser.back)
+        self.ui.actionforward.triggered.connect(self.browser.forward)
+        self.ui.actionShelf.triggered.connect(self.view_shelf)
+        self.ui.actionLibrary.triggered.connect(self.view_library)
 
         # 加载外部的web页面
         self.cache_path = os.path.join(root_path, "cache")
@@ -219,6 +223,12 @@ class QmMainWindow(QMainWindow):
 
         self.pbar.hide()
         self.ui.statusBar.hide()
+
+    def view_library(self):
+        self.browser.load(QUrl("https://weread.qq.com/web/category"))
+
+    def view_shelf(self):
+        self.browser.load(QUrl("https://weread.qq.com/web/shelf"))
 
 
 if __name__ == "__main__":
