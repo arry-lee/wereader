@@ -62,7 +62,17 @@ class QmMainWindow(QMainWindow):
         default_profile.setCachePath(self.cache_path)
         default_profile.setPersistentStoragePath(self.cache_path)
 
-        self.browser.load(QUrl("https://weread.qq.com/"))
+        # 记录上次阅读位置
+        self.history_url_file = os.path.join(self.cache_path,"history.txt")
+        if not os.path.exists(self.history_url_file):
+            url = QUrl("https://weread.qq.com/")
+        else:
+            with open(self.history_url_file,'r') as f:
+                url = QUrl(f.read().strip())
+
+        self.browser.urlChanged.connect(self.update_lastpage) # 每次改变都更新还是退出的时候更新
+
+        self.browser.load(url)
         self.model = QStringListModel(self)
         self.item_model = QStandardItemModel(self)
         self.select_model = QItemSelectionModel(self.item_model)
@@ -87,6 +97,10 @@ class QmMainWindow(QMainWindow):
 
     def update_cookies(self):
         self.cookies = read_cookie_from_path(self.cache_path + "/Cookies")
+
+    def update_lastpage(self):
+        with open(self.history_url_file,'w') as f:
+            f.write(self.browser.history().currentItem().url().toString())
 
     def resizeEvent(self, a0):
         self.browser.resize(
