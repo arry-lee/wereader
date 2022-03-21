@@ -1,5 +1,12 @@
 # 微信读书助手 wereader
-作者 @arry-lee
+作者 @arry-lee 
+
+[手机浏览器打开这个链接去微读给我点个赞吧](https://weread.qq.com/review-detail?reviewid=23859891_7xVj883Yo&type=28)
+`https://weread.qq.com/review-detail?reviewid=23859891_7xVj883Yo&type=28`
+## 2022-3-16 更新日志
+1. 增加前进后退功能
+2. 增加进入书城和书架页面快捷方式
+3. 增加记住上次阅读位置，启动后直接进入阅读状态
 
 ## 2022-2-16 更新日志
 1. 新增带有 GUI 的客户端，也可作为微信读书的桌面客户端。
