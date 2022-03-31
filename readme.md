@@ -1,10 +1,11 @@
 # 微信读书助手 wereader
 作者 @arry-lee 
 
-[手机浏览器打开这个链接去微读给我点个赞吧](https://weread.qq.com/review-detail?reviewid=23859891_7xVj883Yo&type=28)
+[手机浏览器打开这个链接去微读给我点个关注吧](https://weread.qq.com/review-detail?reviewid=23859891_7xVj883Yo&type=28)
 `https://weread.qq.com/review-detail?reviewid=23859891_7xVj883Yo&type=28`
+
 ## 2022-3-31 更新日志
-1. 新增 windows 版安装包，其余平台未测试
+1. 新增 windows 版安装包[v1.0.0](https://github.com/arry-lee/wereader/releases/download/v1.0.0/wereader.zip) 
 2. 界面语言改为中文
 
 ## 2022-3-16 更新日志
