@@ -7,6 +7,7 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+import resource
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -14,7 +15,7 @@ class Ui_MainWindow(object):
         MainWindow.resize(1072, 704)
         MainWindow.setBaseSize(QtCore.QSize(1080, 720))
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("static/icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(":/favicon.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)
         MainWindow.setDocumentMode(False)
         self.browser = QtWidgets.QWidget(MainWindow)
@@ -87,6 +88,7 @@ class Ui_MainWindow(object):
         self.actionAutoScroll.setCheckable(True)
         self.actionAutoScroll.setObjectName("actionAutoScroll")
         self.menuTool.addAction(self.actionLoadShelf)
+        self.menuTool.addSeparator()
         self.menuTool.addAction(self.actionLoadNotes)
         self.menuTool.addAction(self.actionLoadCover)
         self.menuNote.addSeparator()
@@ -98,8 +100,10 @@ class Ui_MainWindow(object):
         self.menuAbout.addAction(self.actionLicense)
         self.menuView.addAction(self.actionback)
         self.menuView.addAction(self.actionforward)
+        self.menuView.addSeparator()
         self.menuView.addAction(self.actionShelf)
         self.menuView.addAction(self.actionLibrary)
+        self.menuView.addSeparator()
         self.menuView.addAction(self.actionAutoScroll)
         self.menubar.addAction(self.menuNote.menuAction())
         self.menubar.addAction(self.menuTool.menuAction())
@@ -112,10 +116,10 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "微信读书助手-wereader"))
-        self.menuTool.setTitle(_translate("MainWindow", "Tool"))
-        self.menuNote.setTitle(_translate("MainWindow", "Note"))
-        self.menuAbout.setTitle(_translate("MainWindow", "About"))
-        self.menuView.setTitle(_translate("MainWindow", "View"))
+        self.menuTool.setTitle(_translate("MainWindow", "工具"))
+        self.menuNote.setTitle(_translate("MainWindow", "笔记"))
+        self.menuAbout.setTitle(_translate("MainWindow", "关于"))
+        self.menuView.setTitle(_translate("MainWindow", "视图"))
         self.actionLoadNotes.setText(_translate("MainWindow", "下载全部笔记"))
         self.actionShow.setText(_translate("MainWindow", "切换笔记模式"))
         self.actionShow.setShortcut(_translate("MainWindow", "Ctrl+Tab"))
@@ -130,9 +134,11 @@ class Ui_MainWindow(object):
         self.actionHide.setText(_translate("MainWindow", "Hide"))
         self.actionLoadHot.setText(_translate("MainWindow", "热门笔记"))
         self.actionLoadCover.setText(_translate("MainWindow", "下载封面"))
-        self.actionback.setText(_translate("MainWindow", "Back"))
+        self.actionback.setText(_translate("MainWindow", "后退"))
+        self.actionback.setToolTip(_translate("MainWindow", "后退"))
         self.actionback.setShortcut(_translate("MainWindow", "B"))
-        self.actionforward.setText(_translate("MainWindow", "Forward"))
+        self.actionforward.setText(_translate("MainWindow", "前进"))
+        self.actionforward.setToolTip(_translate("MainWindow", "前进"))
         self.actionforward.setShortcut(_translate("MainWindow", "F"))
         self.actionShelf.setText(_translate("MainWindow", "书架"))
         self.actionShelf.setShortcut(_translate("MainWindow", "S"))
@@ -140,4 +146,5 @@ class Ui_MainWindow(object):
         self.actionLibrary.setShortcut(_translate("MainWindow", "L"))
         self.actionAutoScroll.setText(_translate("MainWindow", "自动滚屏"))
         self.actionAutoScroll.setShortcut(_translate("MainWindow", "A"))
+
 

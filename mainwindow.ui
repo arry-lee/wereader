@@ -20,8 +20,8 @@
    <string>微信读书助手-wereader</string>
   </property>
   <property name="windowIcon">
-   <iconset>
-    <normaloff>static/icon.png</normaloff>static/icon.png</iconset>
+   <iconset resource="resource.qrc">
+    <normaloff>:/favicon.ico</normaloff>:/favicon.ico</iconset>
   </property>
   <property name="documentMode">
    <bool>false</bool>
@@ -75,15 +75,16 @@
    </property>
    <widget class="QMenu" name="menuTool">
     <property name="title">
-     <string>Tool</string>
+     <string>工具</string>
     </property>
     <addaction name="actionLoadShelf"/>
+    <addaction name="separator"/>
     <addaction name="actionLoadNotes"/>
     <addaction name="actionLoadCover"/>
    </widget>
    <widget class="QMenu" name="menuNote">
     <property name="title">
-     <string>Note</string>
+     <string>笔记</string>
     </property>
     <addaction name="separator"/>
     <addaction name="actionShow"/>
@@ -93,19 +94,21 @@
    </widget>
    <widget class="QMenu" name="menuAbout">
     <property name="title">
-     <string>About</string>
+     <string>关于</string>
     </property>
     <addaction name="actionAuthor"/>
     <addaction name="actionLicense"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
-     <string>View</string>
+     <string>视图</string>
     </property>
     <addaction name="actionback"/>
     <addaction name="actionforward"/>
+    <addaction name="separator"/>
     <addaction name="actionShelf"/>
     <addaction name="actionLibrary"/>
+    <addaction name="separator"/>
     <addaction name="actionAutoScroll"/>
    </widget>
    <addaction name="menuNote"/>
@@ -178,7 +181,10 @@
   </action>
   <action name="actionback">
    <property name="text">
-    <string>Back</string>
+    <string>后退</string>
+   </property>
+   <property name="toolTip">
+    <string>后退</string>
    </property>
    <property name="shortcut">
     <string>B</string>
@@ -186,7 +192,10 @@
   </action>
   <action name="actionforward">
    <property name="text">
-    <string>Forward</string>
+    <string>前进</string>
+   </property>
+   <property name="toolTip">
+    <string>前进</string>
    </property>
    <property name="shortcut">
     <string>F</string>
@@ -220,6 +229,8 @@
    </property>
   </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="resource.qrc"/>
+ </resources>
  <connections/>
 </ui>
