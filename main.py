@@ -16,9 +16,10 @@ from PyQt5.QtWidgets import (QAbstractItemView, QApplication, QMainWindow,
 import wereader
 from cookie import read_cookie_from_path
 from ui_mainwindow import Ui_MainWindow
+from frozen_dir import app_path
 
-root_path = os.path.abspath(os.path.dirname(__file__))
-
+# root_path = os.path.abspath(os.path.dirname(__file__))
+root_path = app_path()
 
 class QmMainWindow(QMainWindow):
     def __init__(self, parent=None):
@@ -34,11 +35,6 @@ class QmMainWindow(QMainWindow):
         self.pbar = QProgressBar(self)
         self.pbar.setFixedWidth(500)
         self.ui.statusBar.addWidget(self.pbar)
-        icon = QtGui.QIcon()
-        icon.addPixmap(
-            QtGui.QPixmap(os.path.join(root_path, "static/icon.png")),
-            QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.setWindowIcon(icon)
 
         self.browser = QWebEngineView(self)
         self.browser.setGeometry(
@@ -245,8 +241,8 @@ class QmMainWindow(QMainWindow):
         self.browser.load(QUrl("https://weread.qq.com/web/shelf"))
 
 
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    mMainWindow = QmMainWindow()
-    mMainWindow.show()
-    sys.exit(app.exec_())
+
+app = QApplication(sys.argv)
+mMainWindow = QmMainWindow()
+mMainWindow.show()
+sys.exit(app.exec_())
