@@ -91,6 +91,7 @@
     <addaction name="actionSave"/>
     <addaction name="separator"/>
     <addaction name="actionLoadHot"/>
+    <addaction name="actionOpen"/>
    </widget>
    <widget class="QMenu" name="menuAbout">
     <property name="title">
@@ -109,7 +110,6 @@
     <addaction name="actionShelf"/>
     <addaction name="actionLibrary"/>
     <addaction name="separator"/>
-    <addaction name="actionAutoScroll"/>
    </widget>
    <addaction name="menuNote"/>
    <addaction name="menuTool"/>
@@ -157,16 +157,6 @@
    </property>
    <property name="toolTip">
     <string>Download shelf</string>
-   </property>
-  </action>
-  <action name="actionOpen">
-   <property name="text">
-    <string>打开</string>
-   </property>
-  </action>
-  <action name="actionHide">
-   <property name="text">
-    <string>Hide</string>
    </property>
   </action>
   <action name="actionLoadHot">
@@ -217,15 +207,9 @@
     <string>L</string>
    </property>
   </action>
-  <action name="actionAutoScroll">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
+  <action name="actionOpen">
    <property name="text">
-    <string>自动滚屏</string>
-   </property>
-   <property name="shortcut">
-    <string>A</string>
+    <string>打开笔记</string>
    </property>
   </action>
  </widget>

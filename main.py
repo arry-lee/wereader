@@ -3,23 +3,25 @@ import os
 import os.path
 import sys
 
-from PyQt5 import QtCore, QtGui
-from PyQt5.QtCore import QItemSelectionModel, QStringListModel, QUrl
-from PyQt5.QtGui import (
+from PySide6.QtCore import (QItemSelectionModel, QStringListModel, QUrl,
+                          Qt, Slot as pyqtSlot)
+from PySide6.QtGui import (
     QStandardItem,
     QStandardItemModel,
 )
-from PyQt5.QtWebEngineWidgets import (QWebEngineProfile, QWebEngineView)
-from PyQt5.QtWidgets import (QAbstractItemView, QApplication, QMainWindow,
-                             QProgressBar, QPushButton)
+from PySide6.QtWebEngineCore import QWebEngineProfile
+from PySide6.QtWebEngineWidgets import QWebEngineView
+from PySide6.QtWidgets import (QAbstractItemView, QApplication, QFileDialog,
+                             QMainWindow,
+                             QProgressBar, QProgressDialog)
 
 import wereader
 from cookie import read_cookie_from_path
-from ui_mainwindow import Ui_MainWindow
 from frozen_dir import app_path
+from ui_mainwindow import Ui_MainWindow
 
-# root_path = os.path.abspath(os.path.dirname(__file__))
 root_path = app_path()
+
 
 class QmMainWindow(QMainWindow):
     def __init__(self, parent=None):
@@ -31,11 +33,13 @@ class QmMainWindow(QMainWindow):
         self.ui.actionLoadShelf.triggered.connect(self.download_shelf)
         self.ui.actionLoadHot.triggered.connect(self.show_hot_note)
         self.ui.actionLoadNotes.triggered.connect(self.download_notes)
+        self.ui.actionOpen.triggered.connect(self.open_notes)
         self.ui.statusBar.hide()
+        # self.setWindowFlags(Qt.CustomizeWindowHint)  # 去掉标题栏的代码
         self.pbar = QProgressBar(self)
         self.pbar.setFixedWidth(500)
         self.ui.statusBar.addWidget(self.pbar)
-
+        
         self.browser = QWebEngineView(self)
         self.browser.setGeometry(
             0,
@@ -47,27 +51,28 @@ class QmMainWindow(QMainWindow):
         self.ui.actionforward.triggered.connect(self.browser.forward)
         self.ui.actionShelf.triggered.connect(self.view_shelf)
         self.ui.actionLibrary.triggered.connect(self.view_library)
-
+        
         # 加载外部的web页面
         self.cache_path = os.path.join(root_path, "cache")
         if not os.path.exists(self.cache_path):
             os.mkdir(self.cache_path)
-
+        
         # 设置缓存目录
         default_profile = QWebEngineProfile.defaultProfile()
         default_profile.setCachePath(self.cache_path)
         default_profile.setPersistentStoragePath(self.cache_path)
-
+        
         # 记录上次阅读位置
-        self.history_url_file = os.path.join(self.cache_path,"history.txt")
+        self.history_url_file = os.path.join(self.cache_path, "history.txt")
         if not os.path.exists(self.history_url_file):
-            url = QUrl("https://weread.qq.com/")
+            url = QUrl("https://weread.qq.com")
         else:
-            with open(self.history_url_file,'r') as f:
+            with open(self.history_url_file, 'r') as f:
                 url = QUrl(f.read().strip())
-
-        self.browser.urlChanged.connect(self.update_lastpage) # 每次改变都更新还是退出的时候更新
-
+        
+        self.browser.urlChanged.connect(
+            self.update_lastpage)  # 每次改变都更新还是退出的时候更新
+        
         self.browser.load(url)
         self.model = QStringListModel(self)
         self.item_model = QStandardItemModel(self)
@@ -76,12 +81,12 @@ class QmMainWindow(QMainWindow):
         self.ui.tableView.setSelectionModel(self.select_model)
         self.ui.tableView.setAlternatingRowColors(True)
         self.ui.tableView.setSelectionBehavior(QAbstractItemView.SelectRows)
-
+        
         self.is_reading_mode = True
         self.note_dir = os.path.join(root_path, "notes")
         if not os.path.exists(self.note_dir):
             os.mkdir(self.note_dir)
-
+        
         try:
             self.update_cookies()
             self.booklist = wereader.get_bookshelf(self.cookies)
@@ -90,14 +95,14 @@ class QmMainWindow(QMainWindow):
         except Exception:
             self.curBook = None
             self.booklist = None
-
+    
     def update_cookies(self):
         self.cookies = read_cookie_from_path(self.cache_path + "/Cookies")
-
+    
     def update_lastpage(self):
-        with open(self.history_url_file,'w') as f:
+        with open(self.history_url_file, 'w') as f:
             f.write(self.browser.history().currentItem().url().toString())
-
+    
     def resizeEvent(self, a0):
         self.browser.resize(
             self.width(),
@@ -107,29 +112,29 @@ class QmMainWindow(QMainWindow):
             self.width() - 10,
             self.height() - self.ui.menubar.height(),
         )
-
+        
         self.ui.tableView.resize(
             self.ui.splitter.width(), self.ui.splitter.height() // 2
         )
-
+    
     def on_listView_clicked(self, index):
         self.curBook = self.booklist[index.row()]
         self.on_curBook_changed()
-
+    
     def on_tableView_clicked(self, index):
         self.curBook = self.booklist[index.row()]
         self.on_curBook_changed()
-
+    
     def on_curBook_changed(self):
         self.ui.noteEdit.clear()
         note = self.get_note(self.curBook.bookId)
         self.ui.noteEdit.setText(note)
-
+    
     def show_hot_note(self):
         self.ui.noteEdit.clear()
         note = self.get_hot_note(self.curBook.bookId)
         self.ui.noteEdit.setText(note)
-
+    
     def get_note(self, id):
         note_name = os.path.join(self.note_dir, "%s.md" % id)
         if os.path.exists(note_name):
@@ -137,7 +142,7 @@ class QmMainWindow(QMainWindow):
                 return f.read()
         else:
             return wereader.get_bookmarklist(id, cookies=self.cookies)
-
+    
     def get_hot_note(self, id):
         note_name = os.path.join(self.note_dir, "%s_hot.md" % id)
         if os.path.exists(note_name):
@@ -145,17 +150,17 @@ class QmMainWindow(QMainWindow):
                 return f.read()
         else:
             return wereader.get_bestbookmarks(id, cookies=self.cookies)
-
+    
     def on_nextButton_clicked(self):
         self.curBook = next(self.books)
         self.on_curBook_changed()
-
+    
     def save_note(self):
         text = self.ui.noteEdit.toPlainText()
         note_name = os.path.join(self.note_dir, "%s.md" % self.curBook.bookId)
         with open(note_name, "w", encoding="utf-8") as f:
             f.write(text)
-
+    
     def toggle_mode(self):
         if self.is_reading_mode:
             self.browser.setVisible(False)
@@ -165,7 +170,7 @@ class QmMainWindow(QMainWindow):
             self.browser.setVisible(True)
             self.ui.actionShow.setText("切换至笔记模式")
             self.is_reading_mode = True
-
+    
     def download_shelf(self):
         """加载书架时默认已经登录，重新获取cookie"""
         if not self.booklist:
@@ -173,12 +178,12 @@ class QmMainWindow(QMainWindow):
             self.booklist = wereader.get_bookshelf(self.cookies)
             self.books = itertools.cycle(self.booklist)
         self.init_model()
-
+    
     def init_model(self):
         self.model.setStringList([b.title for b in self.booklist])
         self.ui.listView.setModel(self.model)
         self.ui.listView.setEditTriggers(QAbstractItemView.NoEditTriggers)
-
+        
         rows = len(self.booklist)
         cols = 3
         self.item_model.setRowCount(rows)
@@ -199,7 +204,7 @@ class QmMainWindow(QMainWindow):
         self.ui.tableView.setColumnWidth(1, 6 * w)
         self.ui.tableView.setColumnWidth(2, 3 * w)
         self.ui.tableView.setSelectionModel(self.select_model)
-
+    
     # def view(self):
     #     img = cv2.imread(next(self.images))  # 读取图像
     #     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)  # 转换图像通道
@@ -212,14 +217,43 @@ class QmMainWindow(QMainWindow):
     #     self.scene = QGraphicsScene()  # 创建场景
     #     self.scene.addItem(self.item)
     #     self.ui.graphicsView.setScene(self.scene)  # 将场景添加至视图
-
+    
+    # def download_notes(self):
+    #     self.ui.actionLoadNotes.setDisabled(True)
+    #     self.ui.statusBar.show()
+    #     self.pbar.show()
+    #     self.pbar.setMaximum(len(self.booklist))
+    #     for i, book in enumerate(self.booklist):
+    #         self.pbar.setValue(i)
+    #         try:
+    #             note_name = os.path.join(self.note_dir, "%s.md" % book.bookId)
+    #             if os.path.exists(note_name):
+    #                 continue
+    #             note = self.get_note(book.bookId)
+    #             if note.strip():
+    #                 with open(note_name, 'w', encoding='utf-8') as f:
+    #                     f.write(note)
+    #         except Exception as e:
+    #             print(e)
+    #
+    #     self.pbar.hide()
+    #     self.ui.statusBar.hide()
+    
     def download_notes(self):
-        self.ui.actionLoadNotes.setDisabled(True)
-        self.ui.statusBar.show()
-        self.pbar.show()
-        self.pbar.setMaximum(len(self.booklist))
+        labText = "正在下载笔记..."
+        btnText = "取消"
+        minV = 0
+        maxV = len(self.booklist)
+        dlgProgress = QProgressDialog(labText, btnText, minV, maxV, self)
+        # dlgProgress.canceled.connect(self.do_progress_canceled)
+        dlgProgress.setWindowTitle("下载笔记")
+        dlgProgress.setWindowModality(Qt.WindowModal)
+        dlgProgress.setAutoReset(True)
+        dlgProgress.setAutoClose(True)
+        
         for i, book in enumerate(self.booklist):
-            self.pbar.setValue(i)
+            dlgProgress.setValue(i)
+            dlgProgress.setLabelText("正在下载笔记，第 %d 个" % i)
             try:
                 note_name = os.path.join(self.note_dir, "%s.md" % book.bookId)
                 if os.path.exists(note_name):
@@ -230,19 +264,32 @@ class QmMainWindow(QMainWindow):
                         f.write(note)
             except Exception as e:
                 print(e)
-
-        self.pbar.hide()
-        self.ui.statusBar.hide()
-
+            if dlgProgress.wasCanceled():
+                break
+    
     def view_library(self):
         self.browser.load(QUrl("https://weread.qq.com/web/category"))
-
+    
     def view_shelf(self):
         self.browser.load(QUrl("https://weread.qq.com/web/shelf"))
-
+    
+    @pyqtSlot()
+    def open_notes(self):
+        cur_path = self.note_dir
+        dlg_title = "选择一个文件"
+        filt = "文本文件(*.txt);;笔记文件(*.md)"
+        try:
+            filename, filtUsed = QFileDialog.getOpenFileName(self, dlg_title,
+                                                             cur_path, filt)
+            print(filename, filtUsed)
+            with open(filename, encoding='utf-8') as f:
+                note = f.read()
+            self.ui.noteEdit.setText(filename + "\n" + filtUsed + "\n\n" + note)
+        except:
+            pass
 
 
 app = QApplication(sys.argv)
 mMainWindow = QmMainWindow()
 mMainWindow.show()
-sys.exit(app.exec_())
+sys.exit(app.exec())
