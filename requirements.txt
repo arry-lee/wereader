@@ -1,2 +1,2 @@
-pyqt5~=5.15.4
+pyside6~=6.5.0
 requests~=2.26.0

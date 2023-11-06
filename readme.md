@@ -1,8 +1,8 @@
 # 微信读书助手 wereader
 作者 @arry-lee 
 
-[手机浏览器打开这个链接去微读给我点个关注吧](https://weread.qq.com/review-detail?reviewid=23859891_7xVj883Yo&type=28)
-`https://weread.qq.com/review-detail?reviewid=23859891_7xVj883Yo&type=28`
+## 2023-11-7 
+1. 将框架切换成了pyside6，内置浏览器组件
 
 ## 2022-3-31 更新日志
 1. 新增 windows 版安装包[v1.0.0](https://github.com/arry-lee/wereader/releases/download/v1.0.0/wereader.zip) 
@@ -48,4 +48,3 @@
 扫码之后也通过命令行  `python client.py` 运行旧版的命令行客户端 `client.py`（不建议使用）
 
 本项目如对您有所帮助，请给作者个小星星，谢谢~~~ 如有什么需求和问题也可以提 issue。
-
