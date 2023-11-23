@@ -126,7 +126,7 @@ class MainWindow(QMainWindow):
         logger.info(self.cookies)
 
     def dump_cookies(self):
-        with open(self.cache_path + "./Cookies", "w") as f:
+        with open(os.path.join(self.cache_path, "Cookies"), "w") as f:
             f.write(";".join([f"{k}:{v}" for k, v in self.cookies.items()]))
 
     def load_cookies(self):

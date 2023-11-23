@@ -132,8 +132,12 @@ def get_bookshelf(cookies):
         data = r.json()
     else:
         raise Exception(r.text)
+    # from rich import print as pprint
+    # pprint(data)
+    finishReadBooks = [b for b in data["finishReadBooks"] if 'bookId' in b]
+    recentBooks = [b for b in data["recentBooks"] if 'bookId' in b]
     books = set()
-    for book in chain(data["finishReadBooks"], data["recentBooks"]):
+    for book in chain(finishReadBooks, recentBooks):
         if not book["bookId"].isdigit():  # 过滤公众号
             continue
         try:
