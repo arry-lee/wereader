@@ -132,8 +132,6 @@ def get_bookshelf(cookies):
         data = r.json()
     else:
         raise Exception(r.text)
-    # from rich import print as pprint
-    # pprint(data)
     finishReadBooks = [b for b in data["finishReadBooks"] if 'bookId' in b]
     recentBooks = [b for b in data["recentBooks"] if 'bookId' in b]
     books = set()
